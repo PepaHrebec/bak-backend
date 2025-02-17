@@ -6,21 +6,8 @@ const app = new Hono();
 
 app.use("/*", cors());
 
-app.get("/", async (c) => {
-  let transcribed = await getTranscribedWord();
-
-  // Fetches a different word in case of a blank transcription
-  while (transcribed.array.length === 0) {
-    transcribed = await getTranscribedWord();
-  }
-
-  return c.json({
-    originalWord: transcribed.word,
-    transcriptions: transcribed.array,
-  });
-});
-
-app.get("/:word", async (c) => {
+// TODO: Add refetch limiter
+app.get("/:word?", async (c) => {
   const { word } = c.req.param();
   let transcribed = await getTranscribedWord(word);
 
