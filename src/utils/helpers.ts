@@ -20,7 +20,6 @@ export async function getTranscribedWord(propWord?: string) {
   const randomWord = generate(1);
 
   // FIX PERSON ERROR
-  // WHEN REMOVING "-" LOOK FOR STRESS MARK DIFFS
 
   const $ = await getCheerioFromUrl(
     `https://dictionary.cambridge.org/dictionary/english/${
@@ -28,8 +27,14 @@ export async function getTranscribedWord(propWord?: string) {
     }`
   );
 
-  $(".superentry .uk.dpron-i .pron.dpron").each(function () {
-    set.add(filterPhonemicString($(this).text()));
+  $(".superentry .uk.dpron-i .pron.dpron .ipa").each(function () {
+    const word = $(this).text();
+    const filteredWord = filterPhonemicString(word);
+
+    // Transcriptions sometimes include "-"-marked words which aren't nouns or verbs
+    if (!filteredWord.startsWith("-")) {
+      set.add(filteredWord);
+    }
   });
 
   return {
@@ -40,7 +45,12 @@ export async function getTranscribedWord(propWord?: string) {
 
 export function filterPhonemicString(
   string: string,
-  options: FilterOptions = { syllables: true, borders: true, initialDash: true }
+  options: FilterOptions = {
+    syllables: true,
+    borders: true,
+    trim: true,
+    initialDash: false,
+  }
 ) {
   for (const key in options) {
     switch (key as keyof FilterOptions) {
@@ -50,6 +60,10 @@ export function filterPhonemicString(
 
       case "syllables":
         string = string.replaceAll(".", "");
+        break;
+
+      case "trim":
+        string = string.trim();
         break;
 
       case "initialDash":
