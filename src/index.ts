@@ -15,8 +15,8 @@ app.get("/", async (c) => {
   }
 
   return c.json({
-    word: transcribed.word,
-    english: transcribed.array,
+    originalWord: transcribed.word,
+    transcriptions: transcribed.array,
   });
 });
 
@@ -30,8 +30,8 @@ app.get("/:word", async (c) => {
   }
 
   return c.json({
-    word: transcribed.word,
-    english: transcribed.array,
+    originalWord: transcribed.word,
+    transcriptions: transcribed.array,
   });
 });
 
