@@ -67,7 +67,7 @@ export async function validateSessionToken(
   const session: Session = {
     id: result.id,
     userId: result.user_id,
-    expiresAt: new Date(result.expires_at.getTime() * 1000),
+    expiresAt: new Date(new Date(result.expires_at).getTime() * 1000),
   };
   if (Date.now() >= session.expiresAt.getTime()) {
     await redis.del(`session:${sessionId}`);

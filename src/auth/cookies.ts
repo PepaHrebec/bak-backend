@@ -7,19 +7,23 @@ export function setSessionTokenCookie(
   token: string,
   expiresAt: Date
 ): void {
-  if (env === Env.PROD) {
-    // When deployed over HTTPS
-    c.header(
-      "Set-Cookie",
-      `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/; Secure;`
-    );
-  } else {
-    // When deployed over HTTP (localhost)
-    c.header(
-      "Set-Cookie",
-      `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/`
-    );
-  }
+  // if (env === Env.PROD) {
+  //   // When deployed over HTTPS
+  //   c.header(
+  //     "Set-Cookie",
+  //     `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/; Secure;`
+  //   );
+  // } else {
+  //   // When deployed over HTTP (localhost)
+  //   c.header(
+  //     "Set-Cookie",
+  //     `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/`
+  //   );
+  // }
+  c.header(
+    "Set-Cookie",
+    `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/`
+  );
 }
 
 export function deleteSessionTokenCookie(c: Context): void {
