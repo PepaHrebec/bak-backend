@@ -27,19 +27,20 @@ export function setSessionTokenCookie(
 }
 
 export function deleteSessionTokenCookie(c: Context): void {
-  if (env === Env.PROD) {
-    // When deployed over HTTPS
-    c.header(
-      "Set-Cookie",
-      "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/; Secure;"
-    );
-  } else {
-    // When deployed over HTTP (localhost)
-    c.header(
-      "Set-Cookie",
-      "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/"
-    );
-  }
+  // if (env === Env.PROD) {
+  //   // When deployed over HTTPS
+  //   c.header(
+  //     "Set-Cookie",
+  //     "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/; Secure;"
+  //   );
+  // } else {
+  //   // When deployed over HTTP (localhost)
+  //   c.header(
+  //     "Set-Cookie",
+  //     "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/"
+  //   );
+  // }
+  c.header("Set-Cookie", "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/");
 }
 
 async function handleRequest(c: Context): Promise<void> {

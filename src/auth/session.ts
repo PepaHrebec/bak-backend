@@ -5,10 +5,6 @@ import {
 } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 
-// Log-in/Sign-in -> Get/Create userId -> Create Token && Session -> Set Session Cookie ->
-// -> Return User Object to Frontend
-// Log-out -> Invalidate Session && Delete Cookie
-
 export interface Session {
   id: string;
   userId: number;
