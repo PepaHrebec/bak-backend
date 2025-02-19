@@ -39,7 +39,7 @@ export async function getTranscribedWord(propWord?: string) {
 
   return {
     array: Array.from(set),
-    word: propWord ?? randomWord,
+    word: propWord ?? randomWord[0],
   };
 }
 
