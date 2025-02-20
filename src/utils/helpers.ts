@@ -1,6 +1,12 @@
 import * as cheerio from "cheerio";
 import { generate } from "random-words";
 import { FilterOptions } from "./types";
+import { db } from "../db";
+import { and, eq } from "drizzle-orm";
+import { Session } from "../auth/session";
+import { repeatedWordsTable } from "../db/schema";
+import { Context } from "hono";
+import { StatusCode } from "hono/utils/http-status";
 
 // Gets the Cheerio object based on the url
 export async function getCheerioFromUrl(url: string) {
@@ -15,6 +21,7 @@ export async function getCheerioFromUrl(url: string) {
   }
 }
 
+// Returns the word and its transcriptions
 export async function getTranscribedWord(propWord?: string) {
   const set: Set<string> = new Set();
   const randomWord = generate(1);
@@ -43,6 +50,7 @@ export async function getTranscribedWord(propWord?: string) {
   };
 }
 
+// Filters the phonemic string based on criteria in options
 export function filterPhonemicString(
   string: string,
   options: FilterOptions = {
@@ -76,4 +84,28 @@ export function filterPhonemicString(
   }
 
   return string;
+}
+
+// Checks wether thw word is included in the user's list
+export async function isWordInList(word: string, session: Session) {
+  const res = await db
+    .select()
+    .from(repeatedWordsTable)
+    .where(
+      and(
+        eq(repeatedWordsTable.word, word),
+        eq(repeatedWordsTable.userId, session.userId)
+      )
+    );
+
+  return res.length !== 0;
+}
+
+export function sendErrorJson(
+  c: Context,
+  message: string,
+  code: StatusCode = 400
+) {
+  c.status(code);
+  return c.json({ message });
 }
