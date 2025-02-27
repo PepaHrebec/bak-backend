@@ -17,6 +17,7 @@ export async function getCheerioFromUrl(url: string) {
     // Use Cheerio to parse the HTML
     return cheerio.load(html);
   } catch (error) {
+    console.log(error);
     throw new Error();
   }
 }

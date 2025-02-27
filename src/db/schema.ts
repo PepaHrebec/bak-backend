@@ -12,4 +12,5 @@ export const repeatedWordsTable = mysqlTable("repeated_words_table", {
     .references(() => usersTable.id)
     .notNull(),
   word: varchar({ length: 255 }).notNull(),
+  transcription: varchar({ length: 255 }).notNull(),
 });
