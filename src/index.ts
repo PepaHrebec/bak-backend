@@ -20,6 +20,8 @@ app.use(
 );
 app.use("*", sessionMiddleware);
 
+app.route("/", auth);
+app.route("/repeat-list", list);
 app.get("/:word?", async (c) => {
   const session = c.get("session");
   let wordIsInList = false;
@@ -46,7 +48,7 @@ app.get("/:word?", async (c) => {
   });
 });
 
-app.route("/", auth);
-app.route("/repeat-list", list);
-
-export default app;
+export default {
+  port: 3000,
+  fetch: app.fetch,
+};

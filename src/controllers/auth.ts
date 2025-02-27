@@ -18,7 +18,7 @@ const auth = new Hono<{ Variables: HonoVariables }>();
 
 auth.post("/sign-in", async (c) => {
   if (c.get("session")) {
-    sendErrorJson(c, "You're already logged-in.");
+    return sendErrorJson(c, "You're already logged-in.");
   }
 
   const body: { name: string; password: string } = await c.req.json();
@@ -30,7 +30,7 @@ auth.post("/sign-in", async (c) => {
     .where(eq(usersTable.name, body.name));
 
   if (res.length !== 0) {
-    sendErrorJson(c, "This user already exists.");
+    return sendErrorJson(c, "This user already exists.");
   }
 
   const userId = await db
@@ -60,13 +60,13 @@ auth.post("/log-in", async (c) => {
     .where(eq(usersTable.name, body.name));
 
   if (res.length === 0) {
-    sendErrorJson(c, "No such user found.");
+    return sendErrorJson(c, "No such user found.");
   }
 
   const isMatch = await Bun.password.verify(body.password, res[0].password);
 
   if (!isMatch) {
-    sendErrorJson(c, "Wrong password.");
+    return sendErrorJson(c, "Wrong password.");
   }
 
   const token = generateSessionToken();
@@ -91,7 +91,7 @@ auth.post("/log-out", async (c) => {
     c.status(200);
     return c.json({});
   } else {
-    sendErrorJson(c, "There has been an error logging you out.");
+    return sendErrorJson(c, "There has been an error logging you out.");
   }
 });
 

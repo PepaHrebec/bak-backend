@@ -12,12 +12,17 @@ list.get("/", async (c) => {
   if (!session) {
     return sendErrorJson(
       c,
-      "You have to be logged-in to access this functionality."
+      "You have to be logged-in to access this functionality.",
+      401
     );
   }
 
   const repeatedWords = await db
-    .select({ word: repeatedWordsTable.word })
+    .select({
+      id: repeatedWordsTable.id,
+      word: repeatedWordsTable.word,
+      transcription: repeatedWordsTable.transcription,
+    })
     .from(repeatedWordsTable)
     .where(eq(repeatedWordsTable.userId, session.userId));
 
@@ -27,14 +32,15 @@ list.get("/", async (c) => {
 });
 
 list.post("/", async (c) => {
-  const body: { word: string } = await c.req.json();
+  const body: { word: string; transcription: string } = await c.req.json();
   console.log(body.word);
 
   const session = c.get("session");
   if (!session) {
     return sendErrorJson(
       c,
-      "You have to be logged-in to access this functionality."
+      "You have to be logged-in to access this functionality.",
+      401
     );
   }
 
@@ -47,13 +53,38 @@ list.post("/", async (c) => {
         eq(repeatedWordsTable.userId, session.userId)
       )
     );
+
+  console.log(body.word);
+  console.log(res.length);
   if (res.length !== 0) {
-    sendErrorJson(c, "This word is already in your list.");
+    return sendErrorJson(c, "This word is already in your list.");
   }
 
+  await db.insert(repeatedWordsTable).values({
+    userId: session.userId,
+    word: body.word,
+    transcription: body.transcription,
+  });
+
+  return c.json({});
+});
+
+list.delete("/:id", async (c) => {
+  const session = c.get("session");
+  if (!session) {
+    return sendErrorJson(
+      c,
+      "You have to be logged-in to access this functionality.",
+      401
+    );
+  }
+
+  const { id } = c.req.param();
+  const numberedId = Number(id);
+
   await db
-    .insert(repeatedWordsTable)
-    .values({ userId: session.userId, word: body.word });
+    .delete(repeatedWordsTable)
+    .where(eq(repeatedWordsTable.id, numberedId));
 
   return c.json({});
 });
