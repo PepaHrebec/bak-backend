@@ -8,11 +8,7 @@ console.log(process.env.MYSQL_URL);
 console.log(process.env.DATABASE_URL);
 
 // docker.for.mac.localhost
-export const db = drizzle(
-  process.env.NODE_ENV === "production"
-    ? process.env.MYSQL_URL
-    : process.env.DATABASE_URL
-);
+export const db = drizzle(process.env.MYSQL_URL);
 
 try {
   await migrate(db, {
