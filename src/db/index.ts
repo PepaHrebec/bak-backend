@@ -14,4 +14,8 @@ try {
   await migrate(db, {
     migrationsFolder: "./drizzle",
   });
-} catch (error) {}
+  console.log("Migration successful!");
+} catch (error) {
+  console.log("Migration failed!");
+  console.log(error);
+}
