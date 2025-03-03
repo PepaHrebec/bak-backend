@@ -86,7 +86,7 @@ auth.post("/log-in", async (c) => {
 auth.post("/log-out", async (c) => {
   const session = c.get("session");
   if (session) {
-    invalidateSession(session.id, session.userId);
+    invalidateSession(session.id);
     deleteSessionTokenCookie(c);
     c.status(200);
     return c.json({});

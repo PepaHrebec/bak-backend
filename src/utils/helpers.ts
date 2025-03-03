@@ -3,7 +3,7 @@ import { generate } from "random-words";
 import { FilterOptions } from "./types";
 import { db } from "../db";
 import { and, eq } from "drizzle-orm";
-import { Session } from "../auth/session";
+import { Session } from "../db/schema";
 import { repeatedWordsTable } from "../db/schema";
 import { Context } from "hono";
 import { StatusCode } from "hono/utils/http-status";

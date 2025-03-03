@@ -1,5 +1,6 @@
 import { Context, Next } from "hono";
-import { Session, validateSessionToken } from "../auth/session";
+import { validateSessionToken } from "../auth/session";
+import { Session } from "../db/schema";
 import { getCookie } from "hono/cookie";
 import { setSessionTokenCookie } from "../auth/cookies";
 

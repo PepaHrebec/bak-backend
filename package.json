@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
-    "bld": "bun build src/index.ts --compile --outfile server"
+    "build": "bun build src/index.ts --compile --outfile server"
   },
   "dependencies": {
     "@oslojs/crypto": "^1.0.1",

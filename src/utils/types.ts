@@ -1,4 +1,4 @@
-import { Session } from "../auth/session";
+import { Session } from "../db/schema";
 
 export interface FilterOptions {
   syllables: boolean;

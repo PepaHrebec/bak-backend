@@ -2,10 +2,10 @@ import { Hono } from "hono";
 import { getTranscribedWord, isWordInList } from "./utils/helpers";
 import { cors } from "hono/cors";
 import { HonoVariables } from "./utils/types";
-import { logger } from "hono/logger";
 import { sessionMiddleware } from "./middleware/session";
 import list from "./controllers/list";
 import auth from "./controllers/auth";
+import { logger } from "hono/logger";
 
 const app = new Hono<{ Variables: HonoVariables }>();
 
@@ -48,7 +48,9 @@ app.get("/:word?", async (c) => {
   });
 });
 
+export const num = 1;
+
 export default {
-  port: 3000,
+  port: Number(process.env.PORT) || 3000,
   fetch: app.fetch,
 };
