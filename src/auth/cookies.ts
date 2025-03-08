@@ -7,19 +7,6 @@ export function setSessionTokenCookie(
   token: string,
   expiresAt: Date
 ): void {
-  // if (env === Env.PROD) {
-  //   // When deployed over HTTPS
-  //   c.header(
-  //     "Set-Cookie",
-  //     `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/; Secure;`
-  //   );
-  // } else {
-  //   // When deployed over HTTP (localhost)
-  //   c.header(
-  //     "Set-Cookie",
-  //     `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/`
-  //   );
-  // }
   c.header(
     "Set-Cookie",
     `session=${token}; HttpOnly; SameSite=Lax; Expires=${expiresAt.toUTCString()}; Path=/`
@@ -27,19 +14,6 @@ export function setSessionTokenCookie(
 }
 
 export function deleteSessionTokenCookie(c: Context): void {
-  // if (env === Env.PROD) {
-  //   // When deployed over HTTPS
-  //   c.header(
-  //     "Set-Cookie",
-  //     "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/; Secure;"
-  //   );
-  // } else {
-  //   // When deployed over HTTP (localhost)
-  //   c.header(
-  //     "Set-Cookie",
-  //     "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/"
-  //   );
-  // }
   c.header("Set-Cookie", "session=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/");
 }
 
@@ -55,8 +29,6 @@ async function handleRequest(c: Context): Promise<void> {
   }
 
   // session validation
-  // const cookies = parseCookieHeader(c.req.header("Cookie") ?? "");
-  // const token = cookies.get("session");
   const token = getCookie(c, "session");
   if (token === undefined) {
     c.status(401);
@@ -70,6 +42,4 @@ async function handleRequest(c: Context): Promise<void> {
     return;
   }
   setSessionTokenCookie(c, token, session.expiresAt);
-
-  // ...
 }

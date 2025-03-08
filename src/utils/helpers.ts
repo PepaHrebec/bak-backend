@@ -3,8 +3,7 @@ import { generate } from "random-words";
 import { FilterOptions } from "./types";
 import { db } from "../db";
 import { and, eq } from "drizzle-orm";
-import { Session } from "../db/schema";
-import { repeatedWordsTable } from "../db/schema";
+import { Session, repeatedWordsTable } from "../db/schema";
 import { Context } from "hono";
 import { StatusCode } from "hono/utils/http-status";
 
@@ -26,8 +25,6 @@ export async function getCheerioFromUrl(url: string) {
 export async function getTranscribedWord(propWord?: string) {
   const set: Set<string> = new Set();
   const randomWord = generate(1);
-
-  // FIX PERSON ERROR
 
   const $ = await getCheerioFromUrl(
     `https://dictionary.cambridge.org/dictionary/english/${
