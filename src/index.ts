@@ -14,7 +14,7 @@ app.use(logger());
 app.use(
   "*",
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND,
     credentials: true,
   })
 );
@@ -47,8 +47,6 @@ app.get("/:word?", async (c) => {
     transcriptions: transcribed.array,
   });
 });
-
-export const num = 1;
 
 export default {
   port: Number(process.env.PORT) || 3000,
