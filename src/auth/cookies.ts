@@ -22,7 +22,7 @@ async function handleRequest(c: Context): Promise<void> {
   if (c.req.method !== "GET") {
     const origin = c.req.header("Origin");
     // You can also compare it against the Host or X-Forwarded-Host header.
-    if (origin === null || origin !== "https://example.com") {
+    if (origin === null || origin !== process.env.FRONTEND) {
       c.status(403);
       return;
     }

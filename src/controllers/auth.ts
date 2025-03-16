@@ -22,6 +22,15 @@ auth.post("/sign-in", async (c) => {
   }
 
   const body: { name: string; password: string } = await c.req.json();
+
+  if (body.name.length < 5) {
+    return sendErrorJson(c, "Name should be at least 5 characters long.");
+  }
+
+  if (body.password.length < 8) {
+    return sendErrorJson(c, "Password should be at least 8 characters long.");
+  }
+
   const hashedPassword = await Bun.password.hash(body.password);
 
   const res = await db

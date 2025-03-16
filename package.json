@@ -13,8 +13,7 @@
     "drizzle-orm": "^0.39.3",
     "hono": "^4.6.20",
     "mysql2": "^3.12.0",
-    "random-words": "^2.0.1",
-    "redis": "^4.7.0"
+    "random-words": "^2.0.1"
   },
   "devDependencies": {
     "@types/bun": "latest",
