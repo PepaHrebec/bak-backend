@@ -3,7 +3,7 @@ import { generate } from "random-words";
 import { FilterOptions } from "./types";
 import { db } from "../db";
 import { and, eq } from "drizzle-orm";
-import { Session, repeatedWordsTable } from "../db/schema";
+import { listsTable, Session, wordsTable } from "../db/schema";
 import { Context } from "hono";
 import { StatusCode } from "hono/utils/http-status";
 
@@ -16,7 +16,6 @@ export async function getCheerioFromUrl(url: string) {
     // Use Cheerio to parse the HTML
     return cheerio.load(html);
   } catch (error) {
-    console.log(error);
     throw new Error();
   }
 }
@@ -33,12 +32,34 @@ export async function getTranscribedWord(propWord?: string) {
   );
 
   $(".superentry .uk.dpron-i .pron.dpron .ipa").each(function () {
-    const word = $(this).text();
-    const filteredWord = filterPhonemicString(word);
+    const wordArray: string[] = [];
+    // We get the raw HTML in order to differentiate the superscript from the rest
+    const originalHtml = $(this).html()!;
+    // We create two versions of the transcription, one with the superscript and one without
+    wordArray.push(originalHtml.replace(/<span.+>(.*)<\/span>/, ""));
+
+    // We want to leave out linking /r/ -> if the superscript isn't /r/
+    if (RegExp(/<span.+>r<\/span>/).exec(originalHtml) === null) {
+      const wordWithSuperscript = originalHtml.replace(
+        /<span.+>(.*)<\/span>/,
+        "$1"
+      );
+
+      // If the transcriptions don't match -> there is some superscript present
+      if (wordArray[0] !== wordWithSuperscript) {
+        wordArray.push(wordWithSuperscript);
+      }
+    }
+
+    const filteredWords = wordArray.map((word) => filterPhonemicString(word));
 
     // Transcriptions sometimes include "-"-marked words which aren't nouns or verbs
-    if (!filteredWord.startsWith("-")) {
-      set.add(filteredWord);
+    filteredWords.forEach((filteredWord) =>
+      filteredWord.startsWith("-") ? null : set.add(filteredWord)
+    );
+
+    if (Array.from(set).length === 0) {
+      throw new Error("No such word exists.");
     }
   });
 
@@ -55,6 +76,7 @@ export function filterPhonemicString(
     syllables: true,
     borders: true,
     trim: true,
+    oddG: true,
     initialDash: false,
   }
 ) {
@@ -76,6 +98,10 @@ export function filterPhonemicString(
         string = string.replace("-", "");
         break;
 
+      case "oddG":
+        string = string.replace("ɡ", "g");
+        break;
+
       default:
         break;
     }
@@ -86,14 +112,22 @@ export function filterPhonemicString(
 
 // Checks wether thw word is included in the user's list
 export async function isWordInList(word: string, session: Session) {
+  // const res = await db
+  //   .select()
+  //   .from(repeatedWordsTable)
+  //   .where(
+  //     and(
+  //       eq(repeatedWordsTable.word, word),
+  //       eq(repeatedWordsTable.userId, session.userId)
+  //     )
+  //   );
+
   const res = await db
     .select()
-    .from(repeatedWordsTable)
+    .from(listsTable)
+    .leftJoin(wordsTable, eq(listsTable.wordId, wordsTable.id))
     .where(
-      and(
-        eq(repeatedWordsTable.word, word),
-        eq(repeatedWordsTable.userId, session.userId)
-      )
+      and(eq(wordsTable.word, word), eq(listsTable.userId, session.userId))
     );
 
   return res.length !== 0;

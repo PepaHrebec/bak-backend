@@ -15,6 +15,13 @@
       "when": 1741010532117,
       "tag": "0001_slow_thunderball",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1743455293651,
+      "tag": "0002_chunky_zarda",
+      "breakpoints": true
     }
   ]
 }

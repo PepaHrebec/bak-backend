@@ -13,12 +13,26 @@ export const usersTable = mysqlTable("users_table", {
   password: varchar({ length: 255 }).notNull(),
 });
 
-export const repeatedWordsTable = mysqlTable("repeated_words_table", {
-  id: serial().primaryKey(),
+export const listsTable = mysqlTable("lists_table", {
+  id: int().autoincrement().notNull().primaryKey(),
   userId: int()
     .references(() => usersTable.id)
     .notNull(),
+  wordId: int()
+    .references(() => wordsTable.id)
+    .notNull(),
+});
+
+export const wordsTable = mysqlTable("words_table", {
+  id: int().autoincrement().notNull().primaryKey(),
   word: varchar({ length: 255 }).notNull(),
+});
+
+export const transcriptionsTable = mysqlTable("transcriptions_table", {
+  id: int().autoincrement().notNull().primaryKey(),
+  wordId: int()
+    .references(() => wordsTable.id)
+    .notNull(),
   transcription: varchar({ length: 255 }).notNull(),
 });
 

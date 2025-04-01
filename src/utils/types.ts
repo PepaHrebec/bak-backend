@@ -5,6 +5,7 @@ export interface FilterOptions {
   borders: boolean;
   initialDash: boolean;
   trim: boolean;
+  oddG: boolean;
 }
 
 export type HonoVariables = {
